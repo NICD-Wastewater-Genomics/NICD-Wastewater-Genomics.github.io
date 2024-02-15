@@ -46,10 +46,14 @@ Once we have loaded the libraries we would like to use, we have to connect to Go
 ##Preparing our data
 
 Now we are ready to work with our data. As previously mentioned, this data is collected using RedCap. In order to obtain this data 
-you will need to export it from RedCap. The data exported is in the form of a .csv file. 
+you will need to export it from RedCap. The data exported is in the form of a .csv file.
+
+You can download an example dataset to practice with here: <a href="static_files/wastewater_sample_data.csv" download>wastewater_sample_data.csv</a>
+
+ 
 We can take that csv file and save it as a dataframe which we will call "map" using the read.csv() function: 
 
-	map <- read.csv("Path/to/the/file.csv") #Replace the path with the path to the file on your computer
+	map <- read.csv("Path/to/the/file.csv", check.names = F) #Replace the path with the path to the file on your computer
 
 
 If you view the "map" dataframe, you will notice that each column name is separated by a fullstop. This is because spaces in 
@@ -85,6 +89,10 @@ have to create a column with the year, another column with the week and then fin
 	map$epiweek2 <- do.call(paste, c(map[my_cols],sep ="")) #taking that data object and saving it in the newly created epiweek2 column
 
 
+The "map" dataframe should now look like the example below. 
+
+![Screenshot](img/map_df.png) 
+
 ##Generating the maps
 
 Now that our data is in the format that we want, we can create maps of where the samples were created.
@@ -113,7 +121,7 @@ If you want to generate a map for a different city, you can simple use that city
 
 To generate a map of all samples collected in the City of Ekurhuleni we first have to tell Google when the center of our map is
 
-	coj_sites <- ggmap(get_googlemap(center = c(lon = 27.91593 , lat = -26.31008),
+	coe_sites <- ggmap(get_googlemap(center = c(lon = 27.91593 , lat = -26.31008),
                                  zoom = 12,
                                  maptype = "hybrid",
                                  color = "color")) +
@@ -135,6 +143,8 @@ To then generate the maps, we finally run:
 
 
 You should now have a map illustrating all sample collection points in the City of Ekurhuleni.
+
+![Screenshot](img/Map1.png)
 
 In order to generate a map showing samples collected during a specific 
 epiweek, as well as the time in which those samples were collected, we will 
@@ -175,3 +185,4 @@ sample, the longitude will be use as our x-coordinate, latitute for the y-coordi
 
 You should now have two maps illustrating the sample collection points. 
 
+![Screenshot](img/Map2.png)

@@ -1,8 +1,8 @@
-site_name: NICD Wastewater Genomics 
+site_name: NICD Wastewater Genomics Syndicate 
 nav: 
   - Home: index.md 
-  - Sample_Maps: sample_maps.md
-  - Turnaround_Times: labtat.md 
+  - "Sample Maps": sample_maps.md
+  - "Turnaround Times": labtat.md 
 theme:
   name: material
   features:
@@ -30,5 +30,8 @@ theme:
         name: Switch to light mode    
       primary: light green
       accent: lime
+markdown_extensions:
+- attr_list
 
-copyright: Copyright (c) 2023, NICD-Wastewater-Genomics
+
+copyright: Copyright (c) 2024, NICD-Wastewater-Genomics
