@@ -2,8 +2,6 @@
 
 Welcome to the documentation page of the Wastewater Genomics Syndicate, housed at the National Institute for Communicable Diseases’ Centre for Vaccines and Immunology (CVI) in South Africa. Our syndicate is dedicated to the surveillance of diverse pathogens, such as SARS-Cov-2, measles, rubella, hepatitis A, hepatitis E, polio, influenza A, and influenza B. We employ wastewater-based epidemiology and cutting-edge genomic techniques to monitor and analyze these pathogens.
 
-Please visit https://nicd-wastewater-genomics.github.io/ to view the documentation.
-
 ## Surveillance and Data Collection
 
 Our comprehensive surveillance initiative extends beyond wastewater monitoring. We also collect clinical data from patients in selected reference hospitals, creating a robust dataset for a holistic understanding of pathogen trends.
