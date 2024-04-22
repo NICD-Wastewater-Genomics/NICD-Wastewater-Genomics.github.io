@@ -36,7 +36,7 @@ To obtain the API token, log into RedCap and select API on the left hand side un
 playground may also be used if you would like to modify the code below to suit your specific requirements.
 
 	token <- "insert-api-toke-here"
-	url <- "https://redcap.core.wits.ac.za/redcap/api/"
+	url <- "insert-redcap-url-here"
 	formData <- list("token"=token,
                  content='record',
                  action='export',
