@@ -24,30 +24,48 @@ The graphs are produced using R version 4.2.2 or higher and the following packag
 	library(lubridate)
  
 
-The read_excel() function will be used to import the the excel spreadsheet into
+RedCap is used by our team as a database to capture and store sample information. There are two ways in which data may be exported for use . The first
+is to download a csv file from RedCap. The read.csv() function will be used to import the the csv file into
 a dataframe. The types of data within each column may be specified using col_types. The coloumns don't always have to specied,but sometimes dates may be imported as numeric values. So specifying the columns helps prevent that from happening. 
 
 
-	water <- read_excel("//nicdfiles/Shares/Centre for Vaccines and Immunology/2022/COVID-19/SACCESS database/SARS-CoV-2 quantitative/Genome Copy Report Log value/2023/Genome copies report 20220710.xlsx", 
-                    col_types = c("text", "text", "text", 
-                                  "text", "text", "text", 
-                                  "numeric", "numeric", "text",
-                                  "text", "text", "text",
-                                  "numeric", "date", "text",
-                                  "text", "text", "text",
-                                  "numeric", "date", "text", 
-                                  "text", "numeric", "numeric", 
-                                  "numeric", "text", "text", 
-                                  "text", "numeric", "text", 
-                                  "text", "text", "date","text", "text", 
-                                  "text","text", "date", "text",
-                                  "date", "text", "text",
-                                  "text", "numeric", "text", 
-                                  "numeric", "text", "numeric", 
-                                  "text", "numeric", "text", 
-                                  "numeric", "numeric", "numeric", 
-                                  "numeric", "numeric", "numeric", 
-                                  "text", "text", "text"))
+	water <- read.csv("Path/to/the/file.csv", check.names = F) #Replace the path with the path to the file on your computer
+
+Alternatively, the RedCap API token may be used to automatically connect to RedCap within the R script, such that fresh data is taken from RedCap without the need to manually export the data. 
+To obtain the API token, log into RedCap and select API on the left hand side under the Applications tab. Generate an API token and insert into the code below (Ensure you have permissions from your administrator). The RedCap API 
+playground may also be used if you would like to modify the code below to suit your specific requirements.
+
+	token <- "06B00D92D2F89FE09BE0F743085C1E35"
+	url <- "https://redcap.core.wits.ac.za/redcap/api/"
+	formData <- list("token"=token,
+                 content='record',
+                 action='export',
+                 format='csv',
+                 type='flat',
+                 csvDelimiter='',
+                 rawOrLabel='raw',
+                 rawOrLabelHeaders='raw',
+                 exportCheckboxLabel='false',
+                 exportSurveyFields='false',
+                 exportDataAccessGroups='false',
+                 returnFormat='json'
+	)
+	response <- httr::POST(url, body = formData, encode = "form")
+	result <- httr::content(response)
+
+	water <- result
+
+Before getting started, we're going to ensure that all date columns are being read in by R as a date. This step is not really necessary, but good to have. 
+
+	water$sam_col_date <- as.Date(water$sam_col_date)
+	water$proc_date <- as.Date(water$proc_date)
+	water$pcr_test_date <- as.Date(water$pcr_test_date)
+	water$extraction_date <- as.Date(water$extraction_date )
+	water$pcr_date <- as.Date(water$pcr_date)
+	water$tapestation_date <- as.Date(water$tapestation_date )
+	water$date_rec_sequences <- as.Date(water$date_rec_sequences)
+	water$date_sub_sequencing <- as.Date(water$date_sub_sequencing)
+	water$seq_report_date <- as.Date(water$seq_report_date)
 
 ##Calculating the epidemiological weeks (epiweeks) 
 
@@ -77,20 +95,19 @@ Week can then combine what's in the "year", "week" and "epiweek" column and then
 	my_cols2 <- c("year", "week", "epiweek") #new data object with 3 columns combined
 	water1$epiweek2 <- do.call(paste, c(water1[my_cols2],sep ="")) #created new variable using concat columns
 
+To ensure that all data is ordered by the year the sample was collected, and then by epidemiological week 
+
+	water <-  water[ #ordering by year first then week
+	with(water, order(year, week)),
+	]
+
 #Calculating turnaround times for quantitative results
 
-Because we only started recording the tat during epiweek 18 of 2023, we have to filter out all other epiweeks 
+Because we only started recording the tat around the end of April 2023, we have to filter out all other samples collected before this period 
 
 
 	watertat <- water1 %>% 
-	filter(epiweek2 == "2023w18" | epiweek2 == "2023w19" | epiweek2 == "2023w20" | 
-        	epiweek2 == "2023w21" |  epiweek2 == "2023w22"|  epiweek2 == "2023w23"|
-		epiweek2 == "2023w24"|epiweek2 == "2023w25"|  epiweek2 == "2023w26" | 
-		epiweek2 == "2023w27"| epiweek2 == "2023w28"|epiweek2 == "2023w29" |
-		epiweek2 == "2023w30" |epiweek2 == "2023w31"| 
-		epiweek2 == "2023w32" |epiweek2 == "2023w33"|
-		epiweek2 == "2023w34" |epiweek2 == "2023w35"|epiweek2 == "2023w36"|
-		epiweek2 == "2023w37")
+	filter(sam_col_date > "2023-04-30")
 
 The tat for each sample may then be calculated by calculating the difference in time by various processes conducted in the lab. The difference is calculated in days
 
@@ -128,6 +145,24 @@ and  how long it took to process those samples
 	tat_vs_freq <- merge(tat_vs_freq, mean_overall, by= "epiweek2", na.rm =TRUE)
 	tat_vs_freq <- merge(tat_vs_freq, freq_samples, by= "epiweek2", na.rm =TRUE)
   
+Since we've captured our epiweeks in the year-w-week format (eg. 2023w45), when plotting this on the x-axis, R will plot the epiweeks in lexicographic order
+instead of by year first and then by week. In order to force R to plot the epiweeks in the correct order, we will first creat a new column called epiweek 3. Epiweek 3 will be 
+a duplication of epiweek 2. We will then separate the year and week and  order the dataframe by year and then week.
+
+	tat_vs_freq$epiweek3 <- tat_vs_freq$epiweek2
+  
+	tat_vs_freq <- tat_vs_freq %>% 
+    	separate(epiweek3,into=c("year", "week"), 
+         sep="w", convert = TRUE, extra = "merge")
+  
+	tat_vs_freq <-  tat_vs_freq[ #ordering by year first then week
+	with(tat_vs_freq, order(year, week)),
+	]
+Since we will be plotting from epiweek2, we now tell R to treat epiweek2 as a factor, and that if there are multiple entries for a given epiweek it must only take one unique epiweek. Lastly, that it must keep the same order
+as the dataframe
+
+	tat_vs_freq$epiweek2 <- factor(tat_vs_freq$epiweek2, levels = unique(tat_vs_freq$epiweek2), ordered = T) 
+
 Now that we have a dataframe (tat_vs_freq) that contains how many samples were collected during each epiweek and how long it took to process those samples, 
 we can plot that on a graph. 
 
@@ -184,33 +219,16 @@ To manually change the colours and labels of each line graph produced we can use
 	
 	dev.off()
 
+![Screenshot](img/quantitative.png)
 
 #Calculating turnaround times for sequencing results 
 
-	seq <- read_excel("//nicdfiles/Shares/Centre for Vaccines and Immunology/2022/COVID-19/SACCESS database/Sequencing Tracking List/Sequencing tracking report.xlsx",
-                  col_types = c("text", "date", "date", 
-                                 "date","text", "date", "date", "numeric", "numeric", "numeric", "date", "text"))
+Since only PCR-positive samples are submitted for sequencing, we first filter out samples that were not sent for sequencing
 
-	seq1 <- seq
-
-	#sub-setting the data so that if sample was repeated, and therefore
-	#the sample id repeated, it will only keep last duplicate, i.e repeat
-
-	seq2 <- seq1[!duplicated(seq1$`Lab Number`), fromLast=T] #double check 
-
-	seq_water <- merge(water1, seq2, by= "Lab Number", na.rm =TRUE)
-
-	seq_water <- seq_water %>% 
-	filter(epiweek2 == "2023w18" | epiweek2 == "2023w19" | epiweek2 == "2023w20" | 
-           epiweek2 == "2023w21" |  epiweek2 == "2023w22"|  epiweek2 == "2023w23"|
-           epiweek2 == "2023w24"| epiweek2 == "2023w25"|  epiweek2 == "2023w26" |
-           epiweek2 == "2023w27" | epiweek2 == "2023w28" | epiweek2 == "2023w29"|
-           epiweek2 == "2023w30" |epiweek2 == "2023w31" | 
-           epiweek2 == "2023w32" |epiweek2 == "2023w33"| 
-           epiweek2 == "2023w34" |epiweek2 == "2023w35"|epiweek2 == "2023w36"|
-           epiweek2 == "2023w37"| epiweek2 == "2023w38")
-
-	#calculate TAT for each sample 
+	water <- water %>% 
+	filter(!is.na(water$date_sub_sequencing))
+	
+We then calculate TAT for each sample similar to what was done above 
 
 	seq_water$extraction_tat <- difftime(seq_water$`Extraction Date`, 
                                      seq_water$`Date tested at Laboratory`
@@ -235,7 +253,7 @@ To manually change the colours and labels of each line graph produced we can use
 	seq_water$overall <- difftime(seq_water$`Report Date` ,seq_water$`Date tested at Laboratory`, units = c("days"))
 
 
-	#calculate mean TAT for each epiweek
+This is then used to calculate the mean TAT for each epiweek
 
 	mean_extraction_tat <- seq_water%>% # we specify which df we would like to use
 	group_by(epiweek2)%>% # we specify what we would like to group by 
@@ -262,14 +280,14 @@ To manually change the colours and labels of each line graph produced we can use
 	summarise(Overall=mean(overall, na.rm = TRUE))
 
 
-	#Tabulate number of samples we've received 
+We then tabulate the number of samples received by epiweek 
 
 	freq_samples2 <- seq_water %>%
 	group_by(epiweek2)%>%
 	count(epiweek2, na.rm=TRUE)
 
-	#create new df with mean TAT and numbers
-	#merge only takes two values at time so we gonna merge two first then the last one 
+A new dataframe is then created with the mean TAT and number of samples received. Since the merge function only takes two dataframes at time, we merge two dataframes at a time
+ 
 	seqtat_vs_freq <- merge(mean_extraction_tat, mean_pcr_tat, by="epiweek2", na.rm =TRUE)
 	seqtat_vs_freq <- merge(seqtat_vs_freq, mean_tapestation_tat, by="epiweek2", na.rm =TRUE)
 	seqtat_vs_freq <- merge(seqtat_vs_freq, mean_sequencing_tat, by="epiweek2", na.rm =TRUE)
@@ -277,17 +295,8 @@ To manually change the colours and labels of each line graph produced we can use
 	seqtat_vs_freq <- merge(seqtat_vs_freq, mean_overall, by="epiweek2", na.rm =TRUE)
 	seqtat_vs_freq <- merge(seqtat_vs_freq, freq_samples2, by="epiweek2", na.rm =TRUE)
 
-	#convert seqtat_vs_freq df into long format 
-
-	#seqtat_vs_freq2 <- seqtat_vs_freq %>%
-                  #gather(Lab, n, -c(epiweek2, n))
-
-	#seqtat_vs_freq2 <- seqtat_vs_freq2 %>%
-        	#filter(Lab == "Meancore" | Lab == "Meanlab") 
-
-
-	#Plot 
-
+A plot may now be created showing the TAT for each laboratory process
+ 
 	png("/path/to/file/sequencing.png", 
     	width = 5*900,
     	height = 5*500, 
@@ -320,3 +329,5 @@ To manually change the colours and labels of each line graph produced we can use
 	tat_plot2
 
 	dev.off()
+
+![Screenshot](img/sequencing.png)
