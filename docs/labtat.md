@@ -35,7 +35,7 @@ Alternatively, the RedCap API token may be used to automatically connect to RedC
 To obtain the API token, log into RedCap and select API on the left hand side under the Applications tab. Generate an API token and insert into the code below (Ensure you have permissions from your administrator). The RedCap API 
 playground may also be used if you would like to modify the code below to suit your specific requirements.
 
-	token <- "06B00D92D2F89FE09BE0F743085C1E35"
+	token <- "insert-api-toke-here"
 	url <- "https://redcap.core.wits.ac.za/redcap/api/"
 	formData <- list("token"=token,
                  content='record',
