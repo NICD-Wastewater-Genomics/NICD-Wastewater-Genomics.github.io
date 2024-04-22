@@ -2,7 +2,8 @@ site_name: NICD Wastewater Genomics Syndicate
 nav: 
   - Home: index.md 
   - "Sample Maps": sample_maps.md
-  - "Turnaround Times": labtat.md 
+  - "Turnaround Times": labtat.md
+  - "Sequencing Analysis": sequencing.md
 theme:
   name: material
   features:
