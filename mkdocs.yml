@@ -4,6 +4,7 @@ nav:
   - "Sample Maps": sample_maps.md
   - "Turnaround Times": labtat.md
   - "Sequencing Analysis": sequencing.md
+  - "SARS-CoV-2 Quantitative Levels": quantitative.md 
 theme:
   name: material
   features:
