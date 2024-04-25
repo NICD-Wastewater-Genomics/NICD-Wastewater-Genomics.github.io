@@ -87,16 +87,22 @@ This line prints a message indicating that the mapping process for all samples i
 
 ###Read Trimming, Variant Calling, and Analysis:
    - **Trimming the reads and sorting**:
+
 This script will loop through all indexed BAM files in the indexed directory and then extract the base filename without the .sorted.bam extension. Ultimately it will define the output trimmed BAM file path and output trimmed and sorted BAM file path
+
      for INDEXED_FILE in "$INDEXED_DIR"/*.sorted.bam; do
      BASENAME=$(basename "$INDEXED_FILE" .sorted.bam)
      TRIMMED_FILE="$TRIMMED_DIR/${BASENAME}.trimmed.bam"
+     
 This line will now trim the reads for each sample
+
      echo "Trimming reads for $INDEXED_FILE"
      ivar trim -b nCoV-2019_v1.bed -i "$INDEXED_FILE" -p "$TRIMMED_FILE" -q 15 -m 100 -s 4 -      e -x 3
+     
 This line will sort the trimmed reads
+
      echo "Sorting trimmed reads for $TRIMMED_FILE"
-    samtools sort "$TRIMMED_FILE" -o "$TRIMMED_SORTED_FILE"
+     samtools sort "$TRIMMED_FILE" -o "$TRIMMED_SORTED_FILE"
      done
      echo "Read trimming and sorting complete."
 
