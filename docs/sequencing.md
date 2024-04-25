@@ -142,13 +142,12 @@ This script will check if the depth file exists(not compulsory) then run the Fre
 
 
    - **Freyja Demix**:
-     ```bash
-     # Script available in the documentation
-     ```
+     
    - **Aggregating the Freyja Output Files**:
-     ```bash
-     # Script available in the documentation
-     ```
+
+     freyja aggregate /RAW/Freyja_demix/ --ext .tsv –output                     /RAW/Freyja_demix/aggregate_file/agg_epi2_8.tsv
+     
+
 
 #Mutational and SNPs Analysis:
    - **Exatype Parameters**:
