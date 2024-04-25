@@ -87,23 +87,67 @@ This line prints a message indicating that the mapping process for all samples i
 
 ###Read Trimming, Variant Calling, and Analysis:
    - **Trimming the reads and sorting**:
-     ```bash
-     # Script available in the documentation
-     ```
+
+This script will loop through all indexed BAM files in the indexed directory and then extract the base filename without the .sorted.bam extension. Ultimately it will define the output trimmed BAM file path and output trimmed and sorted BAM file path
+
+     for INDEXED_FILE in "$INDEXED_DIR"/*.sorted.bam; do
+     BASENAME=$(basename "$INDEXED_FILE" .sorted.bam)
+     TRIMMED_FILE="$TRIMMED_DIR/${BASENAME}.trimmed.bam"
+     
+This line will now trim the reads for each sample
+
+     echo "Trimming reads for $INDEXED_FILE"
+     ivar trim -b nCoV-2019_v1.bed -i "$INDEXED_FILE" -p "$TRIMMED_FILE" -q 15 -m 100 -s 4 -      e -x 3
+     
+This line will sort the trimmed reads
+
+     echo "Sorting trimmed reads for $TRIMMED_FILE"
+     samtools sort "$TRIMMED_FILE" -o "$TRIMMED_SORTED_FILE"
+     done
+     echo "Read trimming and sorting complete."
+
+
 
 ###Freyja Analysis:
    - **Running Freyja variants**:
-     ```bash
-     # Script available in the documentation
-     ```
+   - 
+This script will specify the directory where the variants and depths files are located.
+
+      VARIANTS_DIR="/RAW/Depths_TSV_all_copy_B/TSV_all/TSV"
+      DEPTHS_DIR="/RAW/Depths_TSV_all_copy_B/Depths_all/Depths"
+
+This will create the output directory (if not yet created) where the results will be stored
+
+      OUTPUT_DIR="/RAW/Depths_TSV_all_copy_B/output"
+      mkdir -p "${OUTPUT_DIR}"
+
+Loop into the variant files in the variants directory and then extract the base name for matching with the depth file. It will then construct the path to the matching depth file and subsequently specify the output file name, ending with .demix.tsv.
+
+      for variants_file in ${VARIANTS_DIR}/*.tsv; do
+      base_name=$(basename "${variants_file}" .tsv)
+      depth_file="${DEPTHS_DIR}/${base_name}.depths"
+      output_file="${OUTPUT_DIR}/${base_name}.demix.tsv"
+
+This script will check if the depth file exists(not compulsory) then run the Freyja variants step.
+
+      if [ ! -f "${depth_file}" ]; then
+     echo "Depth file for ${base_name} does not exist. Skipping..."
+     continue
+     fi
+     #Run Freyja demix
+     echo "Processing: ${base_name}"
+     freyja demix "${variants_file}" "${depth_file}" --output "${output_file}"
+     done
+     echo "All samples processed."
+
+
    - **Freyja Demix**:
-     ```bash
-     # Script available in the documentation
-     ```
+     
    - **Aggregating the Freyja Output Files**:
-     ```bash
-     # Script available in the documentation
-     ```
+
+     freyja aggregate /RAW/Freyja_demix/ --ext .tsv –output                     /RAW/Freyja_demix/aggregate_file/agg_epi2_8.tsv
+     
+
 
 #Mutational and SNPs Analysis:
    - **Exatype Parameters**:
