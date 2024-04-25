@@ -142,10 +142,21 @@ This script will check if the depth file exists(not compulsory) then run the Fre
 
 
    - **Freyja Demix**:
+
+This script will iterate over each TSV file created on the previous step then it runs the Freyja demix step using the tsv file and depths file.
+
+       For tsv_file in /RAW/Depths_TSV_all_copy_B/TSV_all/TSV/*.tsv; do
+       sample_name=$(basename “tsv_file” .tsv)
+       depths_file= “/RAW/Depths_TSV_all_copy_B/Depths/${sample_name}.depths”
+       output_file=”RAW/Freyja_demix/${sample_name}.demix.tsv
+       echo “Running Freyja for $tsv_file”
+       Freyja demix “$tsv_file” “$depths_file” –output “output_file”
+       done.
+
      
    - **Aggregating the Freyja Output Files**:
 
-     freyja aggregate /RAW/Freyja_demix/ --ext .tsv –output                     /RAW/Freyja_demix/aggregate_file/agg_epi2_8.tsv
+      freyja aggregate /RAW/Freyja_demix/ --ext .tsv –output                           /RAW/Freyja_demix/aggregate_file/agg_epi2_8.tsv
      
 
 
@@ -165,6 +176,7 @@ This script will check if the depth file exists(not compulsory) then run the Fre
 
 - Castellano, Sara, et al. “iVar, an Interpretation-Oriented Tool to Manage the Update and Revision of Variant Annotation and Classification.” *Genes* 12, no. 3 (March 8, 2021): 384. [DOI: 10.3390/genes12030384](https://doi.org/10.3390/genes12030384)
 - Dahui, Qin. “Next-Generation Sequencing and Its Clinical Application.” *Cancer Biology & Medicine* 16, no. 1 (February 1, 2019): 4–10. [DOI: 10.20892/j.issn.2095-3941.2018.0055](https://doi.org/10.20892/j.issn.2095-3941.2018.0055)
+- Grubaugh, N.D., Gangavarapu, K., Quick, J. et al. An amplicon-based sequencing framework for accurately measuring intrahost virus diversity using PrimalSeq and iVar. Genome Biol 20, 8 (2019). https://doi.org/10.1186/s13059-018-1618-7
 - Karthikeyan, Smruthi, et al. “Wastewater Sequencing Reveals Early Cryptic SARS-CoV-2 Variant Transmission.” *Nature* 609, no. 7925 (September 1, 2022): 101–8. [DOI: 10.1038/s41586-022-05049-6](https://doi.org/10.1038/s41586-022-05049-6)
 - Li, Heng, and Richard Durbin. “Fast and Accurate Short Read Alignment with Burrows–Wheeler Transform.” *Bioinformatics* 25, no. 14 (July 15, 2009): 1754–60. [DOI: 10.1093/bioinformatics/btp324](https://doi.org/10.1093/bioinformatics/btp324)
 - Yousif, Mukhlid, et al. “SARS-CoV-2 Genomic Surveillance in Wastewater as a Model for Monitoring Evolution of Endemic Viruses.” *Nature Communications* 14, no. 1 (October 10, 2023): 6325. [DOI: 10.1038/s41467-023-41369-5](https://doi.org/10.1038/s41467-023-41369-5)
