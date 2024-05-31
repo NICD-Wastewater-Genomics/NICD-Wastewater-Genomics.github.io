@@ -259,7 +259,7 @@ We start by tabulating the number of samples received
 	rsacases_vs_water<- full_join(rsa_samples, rsa_water, by= "epiweek2")
 	rsacases_vs_water<- full_join(rsacases_vs_water, rsacopies, by= "epiweek2")
 
-repeating this just for weeks where no ww samples but clinical cases- otherwise would be blank
+repeating this just for weeks where there are clinical cases but no wastewater samples otherwise it would be blank
 
 	rsacases_vs_water <- rsacases_vs_water %>%
 	  mutate(PCR = if_else(year == 2021, "qPCR", PCR)) %>%
@@ -272,6 +272,7 @@ repeating this just for weeks where no ww samples but clinical cases- otherwise 
 
 	rsacases_vs_water$final_result <- rsacases_vs_water$SARS.CoV.2.PCR.result
 
+Since we don't need all the columns currently in the dataframe, select the columns we want, which is a bit easier to work with.
 	rsacases_vs_water <- rsacases_vs_water %>%
 	  select(epiweek2, n, sum_genomes, Date, PCR)
 
@@ -358,27 +359,33 @@ remove duplicated rows
 
 #Creating a district level plot
 
+Below is the continuation and completion of the detailed guide for performing SARS-CoV-2 quantitative levels analysis using R. 
+This guide includes plotting the data at a district level. In the example below we have selected Johannesburg as our district of interest. For other districts, replace the District Name and Site Names for 
+your district of interest. 
 
-Tabulate number of samples we've received 
+
+First start by tabulating the number of samples received. We do this by grouping the samples by epidemiological week and then counting the number of samples per week. 
 
 	jhb_samples <- joburg_cases %>%
 	  group_by(epiweek2)%>%
 	  count(epiweek2, na.rm=TRUE)
 
-filter for jhb www 
+Then we filter for samples that were collected in our district of interest and at the wastewater treatment plants of interest. In this case we're filtering for samples 
+collected in the Johannesburg Municipality, at the Goudkoppies and Northern Wastewater Treatment Plants.  
 
 	jhb_water <- water1 %>% 
 	  filter(District.Name == "Johannesburg MM") %>%
 	  filter( Site.Name. == "Goudkoppies Wastewater Treatment Works" |
             Site.Name. == "Northern Wastewater Treatment Works (GP)")
 
-merge the two df 
+We then merge the two data frames and create a new column for the final PCR results. 
 
 	jhbcases_vs_water<- full_join(jhb_samples, jhb_water, by= "epiweek2")
 	jhbcases_vs_water$final_result <- jhbcases_vs_water$SARS.CoV.2.PCR.result
 
 
-selecting columns I want
+We then select relevant columns we would like to work with, and remove rows that have invalid epiweek values i.e all samples in which epiweek2 = NAwNA as these are 
+samples which had no sample collection dates.
 
 
 	jhbcases_vs_water <- jhbcases_vs_water %>% 
@@ -386,6 +393,9 @@ selecting columns I want
          Site.Province., District.Name,Genome.copies.mL...N.gene.., levels, loglevels, Date, final_result, PCR) %>% 
 	  filter(epiweek2 != "NAwNA")
 
+In our reports we use square markers to indicate weeks where samples were tested. We place these markers below zero on the x-axis, in line with the corresponding
+epiweek. In order to do this we create new columns (tested1 and tested2) for each WWTP. We use the mutate function to create these columns and assign the value -0.3 or -0.1 for each site
+if a sample was tested and had a Positive or Negative result. The values -0.3 and -0.1 are arbitrary, and were selected to ensure the marker is graphed below zero.  
 
 	jhbcases_vs_water<- jhbcases_vs_water %>%
 	  mutate(tested1 = case_when( (Site.Name. == "Goudkoppies Wastewater Treatment Works" & final_result == "Positive") ~ -0.3, 
@@ -393,76 +403,87 @@ selecting columns I want
 	  mutate(tested2 = case_when( (Site.Name. == "Northern Wastewater Treatment Works (GP)" & final_result == "Positive") ~ -0.1, 
                               (Site.Name. == "Northern Wastewater Treatment Works (GP)" & final_result == "Negative") ~ -0.1))
 
+Before plotting, we want to ensure that the correct order of the epiweeks such that the order is by year first, then week.  To do this we first create a copy of epiweek2 and name it epiweek3 
 
 	jhbcases_vs_water$epiweek3 <- jhbcases_vs_water$epiweek2
+
+Then we split the epiweek3 column into a "year" column and a "week" column. We then convert the values in these columns into integers. 
 
 	jhbcases_vs_water <- jhbcases_vs_water %>%
 	  separate(epiweek3, sep = "w", into = c("year", "week")) %>%
 	  mutate(across(c("year", "week"), as.integer)) 
 
+Since we only started testing wastewater samples for SARS-CoV-2 in 2021, we filter out and clinical samples from 2020
+
 	jhbcases_vs_water <- jhbcases_vs_water %>%
 	  filter(year != 2020)
 
+Now we can order the samples first by year and then week
 
 	jhbcases_vs_water <-  jhbcases_vs_water[ #ordering by year first then week
 	  with(jhbcases_vs_water, order(year, week)),
 	]
+To ensure this order stays the same when we're plotting the graph, we conver epiweek2 into an ordered factor.
 
 	jhbcases_vs_water$epiweek2 <- factor(jhbcases_vs_water$epiweek2, levels = unique(jhbcases_vs_water$epiweek2), ordered = T)
 
+Initially samples were tested using a qPCR but during 2023, we switched to testing samples using a dPCR. This change is indicated in our graphs using facets which show the type of PCR test performed. To create
+these facets, we first specify which type of PCR test was performed based on when the samples were collected. 
+
 	jhbcases_vs_water <- jhbcases_vs_water %>%
-	  mutate(PCR = if_else(year == 2021, "qPCR", PCR)) %>%
-	  mutate(PCR = if_else(year == 2022, "qPCR", PCR)) %>%
-	  mutate(PCR = if_else(year == 2023 & week < 30, "qPCR", PCR)) %>%
-	  mutate(PCR = if_else(year == 2023 & week > 30, "dPCR", PCR)) %>%
-	  mutate(PCR = if_else(is.na(PCR), "qPCR", PCR)) %>%
+	  mutate(PCR = if_else(year == 2021, "qPCR", PCR)) %>% # Set PCR method for 2021 to qPCR
+	  mutate(PCR = if_else(year == 2022, "qPCR", PCR)) %>% # Set PCR method for 2022 to qPCR
+	  mutate(PCR = if_else(year == 2023 & week < 30, "qPCR", PCR)) %>% # Set PCR method for early 2023 to qPCR
+	  mutate(PCR = if_else(year == 2023 & week > 30, "dPCR", PCR)) %>% # Set PCR method for late 2023 to dPCR
+	  mutate(PCR = if_else(is.na(PCR), "qPCR", PCR)) %>% # Replace NA PCR values with qPCR
 	  mutate(n = if_else(is.na(n), 0, n)) #replace na with 0
 
+This next line of code is only necessary if you have many samples spanning multiple years. You may want to only show every nth epiweek on the graph instead of every week as this may appear cluttered. 
+This funtion allows you to return every nth element. When added to the graph, you specify the value of n.
 
 	every_nth = function(n) {
 	  return(function(x) {x[c(TRUE, rep(FALSE, n - 1))]})
 	}
 
-	png("/path/yo/file/Johannesburg.png", 
-    	width = 5*950,
-    	height = 5*300, 
-    	res = 300,
-    	pointsize = 8)
-  
+Then we create the graph and save it as a png file.
 
-	#jhbplot <- ggplot(jhbcases_vs_water[!is.na(jhbcases_vs_water$loglevels),] ) + #this ignores na in y allowing graph points to connect
-	jhbplot <- ggplot(jhbcases_vs_water) + #this ignores na in y allowing graph points to connect
+	png("/path/yo/file/Johannesburg.png", # Create a PNG file for the plot 
+    	width = 5*950,  # Set width of the image
+    	height = 5*300, # Set height of the image
+    	res = 300, # Set resolution of the image
+    	pointsize = 8) # Set point size for the image
   
-	geom_bar(aes(x=epiweek2, y=n), stat="identity", fill="gray",colour="gray")+
-	  geom_point(aes(x=epiweek2, y=tested1 * 10000, group = 1, col = " Goudkoppies Sample Collection"),stat="identity", size=1, shape = 15)+
-	  geom_point(aes(x=epiweek2, y=tested2 * 10000, group = 1, col = "Northern Sample Collection"),stat="identity", size=1, shape = 15)+
-	  geom_point(aes(x=epiweek2, y=loglevels *10000, group=Site.Name., col=Site.Name.),stat="identity", size=2, )+
-	  geom_line(aes(x=epiweek2, y=loglevels * 10000, group=Site.Name., col=Site.Name.),stat="identity", size=1) +
-  
-	  scale_colour_manual(values = c(" Goudkoppies Sample Collection" = "darkred", "Northern Sample Collection" = "darkblue", 
-                                 "Goudkoppies Wastewater Treatment Works" = "#FC4E2A","Northern Wastewater Treatment Works (GP)" =  "#009ADE" )) +
-	  scale_y_continuous(sec.axis=sec_axis(~ . /10000,name="Log Genome Copies/ml (N Gene)\n"),
-                     breaks = scales::pretty_breaks(n = 2),
-                     labels = label_comma()) + 
-	  guides(color = guide_legend(override.aes = list(shape = c(15, 16, 15, 16),
-                                                  linetype = c(0, 1,0, 1)) )) + 
-	  scale_x_discrete(breaks = every_nth(n=5)) +
-	  facet_grid(~factor(PCR, levels=c('qPCR', 'dPCR')), scales = "free_x", space= "free")+
-	  labs(x="\nEpidemiological week",y="Laboratory confirmed cases\n")+
-	  ggthemes::theme_tufte()+
-	  theme(
-    #axis.ticks.x= element_blank(), 
-    axis.text.x = element_text(angle = 90, hjust = 0,color="black", size=16 ),
-    axis.text.y = element_text(color="black", size=16 ),
-    legend.position="bottom",
-    legend.title = element_blank(),
-    text = element_text(color="black", size=16),
-    axis.line.x = element_line(color="black", size = 1),
-    axis.line.y = element_line(color="black", size = 1),
-    strip.background = element_rect(fill = "white"),
-    strip.text = element_text(size = 12))
+	jhbplot <- ggplot(jhbcases_vs_water) +    # Create ggplot object with jhbcases_vs_water data frame
+	geom_bar(aes(x = epiweek2, y = n), stat = "identity", fill = "gray", colour = "gray") +   # Add bar plot for number of cases
+	geom_point(aes(x = epiweek2, y = tested1 * 10000, group = 1, col = "Goudkoppies Sample Collection"), stat = "identity", size = 1, shape = 15) +   # Add points for Goudkoppies sample collection
+	geom_point(aes(x = epiweek2, y = tested2 * 10000, group = 1, col = "Northern Sample Collection"), stat = "identity", size = 1, shape = 15) +   # Add points for Northern sample collection
+	geom_point(aes(x = epiweek2, y = loglevels * 10000, group = Site.Name., col = Site.Name.), stat = "identity", size = 2) +   # Add points for log genome copies
+	geom_line(aes(x = epiweek2, y = loglevels * 10000, group = Site.Name., col = Site.Name.), stat = "identity", size = 1) +   # Add lines for log genome copies
+	scale_colour_manual(values = c("Goudkoppies Sample Collection" = "darkred", "Northern Sample Collection" = "darkblue", 
+                                "Goudkoppies Wastewater Treatment Works" = "#FC4E2A", "Northern Wastewater Treatment Works (GP)" = "#009ADE")) +   # Set custom colors for the points and lines
+	scale_y_continuous(sec.axis = sec_axis(~ . / 10000, name = "Log Genome Copies/ml (N Gene)\n"),   # Create secondary y-axis for log genome copies
+                     breaks = scales::pretty_breaks(n = 2),   # Set breaks for the y-axis
+                     labels = scales::label_comma()) +   # Format y-axis labels with commas
+	guides(color = guide_legend(override.aes = list(shape = c(15, 16, 15, 16),   # Customize legend
+                                                  linetype = c(0, 1, 0, 1)))) +   
+	scale_x_discrete(breaks = every_nth(n = 5)) +   # Set x-axis breaks to show every 5th label
+	facet_grid(~factor(PCR, levels = c('qPCR', 'dPCR')), scales = "free_x", space = "free") +   # Create facets for PCR method with free scales
+	labs(x = "\nEpidemiological week", y = "Laboratory confirmed cases\n") +   # Add axis labels
+	ggthemes::theme_tufte() +   # Apply Tufte theme
+	theme(
+    	axis.text.x = element_text(angle = 90, hjust = 0, color = "black", size = 16),   # Customize x-axis text
+    	axis.text.y = element_text(color = "black", size = 16),   # Customize y-axis text
+    	legend.position = "bottom",   # Place legend at the bottom
+    	legend.title = element_blank(),   # Remove legend title
+    	text = element_text(color = "black", size = 16),   # Set general text properties
+    	axis.line.x = element_line(color = "black", size = 1),   # Customize x-axis line
+    	axis.line.y = element_line(color = "black", size = 1),   # Customize y-axis line
+    	strip.background = element_rect(fill = "white"),   # Customize facet background
+    	strip.text = element_text(size = 12))   # Customize facet text
 
-	jhbplot
+	jhbplot   # Plot the ggplot object
 
-	dev.off()
+	dev.off()   # Close the PNG device
+
+
 ![Screenshot](img/Johannesburg.png)
