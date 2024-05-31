@@ -259,7 +259,7 @@ We start by tabulating the number of samples received
 	rsacases_vs_water<- full_join(rsa_samples, rsa_water, by= "epiweek2")
 	rsacases_vs_water<- full_join(rsacases_vs_water, rsacopies, by= "epiweek2")
 
-repeating this just for weeks where there are clinical cases but no wastewater samples otherwise it would be blank
+We then repeat this for weeks where there are clinical cases but no wastewater samples otherwise it would be blank
 
 	rsacases_vs_water <- rsacases_vs_water %>%
 	  mutate(PCR = if_else(year == 2021, "qPCR", PCR)) %>%
@@ -276,84 +276,170 @@ Since we don't need all the columns currently in the dataframe, select the colum
 	rsacases_vs_water <- rsacases_vs_water %>%
 	  select(epiweek2, n, sum_genomes, Date, PCR)
 
+We calculate log10 of sum_genomes and store it in a new column loglevels
+
 	rsacases_vs_water$loglevels <- log10(rsacases_vs_water$sum_genomes)
+
+In our reports we use square markers to indicate weeks where samples were tested. We place these markers below zero on the x-axis, in line with the corresponding epiweek. In order to do this we create a new column (tested). 
+We use the mutate function to create these columns and assign the value -0.3 if a sample was tested. 
+The values -0.3 is arbitrary, and was selected to ensure the marker is graphed below zero.
 
 	rsacases_vs_water<- rsacases_vs_water %>%
 	  mutate(tested = case_when( (sum_genomes > 0) ~ -0.3)) %>%
 	  mutate(n = if_else(is.na(n), 0, n)) #replace na with 0
 
+Before plotting, we want to ensure that the correct order of the epiweeks such that the order is by year first, then week. To do this we first create a copy of epiweek2 and name it epiweek3
 
 	rsacases_vs_water$epiweek3 <- rsacases_vs_water$epiweek2
+
+
+Then we split the epiweek3 column into a "year" column and a "week" column. We then convert the values in these columns into integers.
 
 	rsacases_vs_water <- rsacases_vs_water %>%
 	  separate(epiweek3, sep = "w", into = c("year", "week")) %>%
 	  mutate(across(c("year", "week"), as.integer)) 
 
+Since we only started testing wastewater samples for SARS-CoV-2 in 2021, we filter out and clinical samples from 2020
+
 	rsacases_vs_water <- rsacases_vs_water %>%
 	  filter(year != 2020)
 
+Now we can order the samples first by year and then week
 
 	rsacases_vs_water <-  rsacases_vs_water[ #ordering by year first then week
 	  with(rsacases_vs_water, order(year, week)),
 	]
 
+To ensure this order stays the same when we're plotting the graph, we conver epiweek2 into an ordered factor.
+
 	rsacases_vs_water$epiweek2 <- factor(rsacases_vs_water$epiweek2, levels = unique(rsacases_vs_water$epiweek2), ordered = T)
+
+Add a new column "Country" with a constant value.
 
 	rsacases_vs_water$Country <- "South African SARS-CoV-2 Wastewater Levels"
 
 	rsacases_vs_water$Date <- "w"
 
-remove duplicated rows 
+Remove duplicated rows 
 
 	rsacases_vs_water <- rsacases_vs_water %>% distinct()
+
+
+Create a new column 'end' by parsing date and time using the lubridate package. Then we concatenate year, week, and 0 with "-" as separator to form a string.
+Specify the format 'Y-W-w' where 'Y' is year, 'W' is week, and 'w' is the day of the week (0 = week start on Sunday).Add 6 days to the parsed date to get the end of the epidemiological week.
+This function parses the concatenated string into a date-time object.The resulting date represents the start of the epidemiological week, so adding 6 days gives the end of the week.
+This is mainly used for getting the last day of the epidemilogical week which is used on the dashboard. 
 
 	rsacases_vs_water$end <- lubridate::parse_date_time(paste(rsacases_vs_water$year, rsacases_vs_water$week,0, sep="-"),'Y-W-w') + days(6)
 	#lubridate::parse_date_time(year, week, 0= week start on sunday, sep = formwat you want)
 	#this gives start of epiweek so add 6 days to get end of epiweek
 
+This next line of code is only necessary if you have many samples spanning multiple years. You may want to only show every nth epiweek on the graph instead of every week as this may appear cluttered. 
+This funtion allows you to return every nth element. When added to the graph, you specify the value of n.
 
 	every_nth = function(n) {
 	  return(function(x) {x[c(TRUE, rep(FALSE, n - 1))]})
 	}
 
-	png("/path/to/file/overall_rsa.png", 
-    	width = 5*950,
-    	height = 5*300, 
-    	res = 300,
-    	pointsize = 8)
- 
-	  rsaplot <- ggplot(rsacases_vs_water) +
-	  geom_point(aes(x=epiweek2, y=tested * 10000, group = 1, col = "Sample Collection"), stat="identity", size=1, shape = 15)+
-	  geom_bar(aes(x=epiweek2, y=n), stat="identity", fill="gray",
-           colour="gray")+
-	  geom_point(aes(x=epiweek2, y=loglevels *10000, 
-                 group=Country, col=Country),stat="identity", size=2)+
-	  geom_line(aes(x=epiweek2, y=loglevels *10000,  
-                group=Country, col=Country),stat="identity", size=1) +
-	  scale_x_discrete(breaks = every_nth(n = 2)) +
-	  scale_colour_manual(values = c("Sample Collection" = "darkblue", "South African SARS-CoV-2 Wastewater Levels" = "#009ADE")) +
-	  guides(color = guide_legend(override.aes = list(shape = c(15, 16),
-                                                  linetype = c(0, 1)) )) + 
-	  scale_y_continuous(sec.axis=sec_axis(~ . /10000,name="Log Genome Copies/ml (N Gene)\n"),
-                     breaks = scales::pretty_breaks(n = 4),
-                     labels = label_comma()) + 
-	  labs(x="\nEpidemiological week",y="Laboratory confirmed cases\n")+
-	  facet_grid(~factor(PCR, levels=c('qPCR', 'dPCR')), scales = "free_x", space= "free_x")+
-	  ggthemes::theme_tufte()+
-	  theme(
-    axis.text.x = element_text(angle = 90, hjust = 0,color="black", size=12 ),
-    axis.text.y = element_text(color="black", size=12 ),
-    legend.position="bottom",
-    legend.title = element_blank(),
-    text = element_text(color="black", size=12),
-    axis.line.x = element_line(color="black", size = 1),
-    axis.line.y = element_line(color="black", size = 1),
-    strip.background = element_rect(fill = "white"), 
-    strip.text = element_text(size = 12) )
+We then plot the graph.This line opens a PNG device to create a file named overall_rsa.png.
+The dimensions are set to 5 times 950 pixels in width and 5 times 300 pixels in height.
+The resolution is set to 300 DPI.
+The point size for text and points in the plot is set to 8. 
 
-	rsaplot
+	png("/path/to/file/overall_rsa.png",  # Create a PNG file for the plot
+    	width = 5 * 950,  # Set width of the image
+    	height = 5 * 300,  # Set height of the image
+    	res = 300,  # Set resolution of the image
+    	pointsize = 8)  # Set point size for the image
 
-	dev.off()
+This initializes a ggplot object using the rsacases_vs_water data frame.
+
+	rsaplot <- ggplot(rsacases_vs_water) +  # Create a ggplot object with rsacases_vs_water data frame
+	
+This adds points to the plot representing the tested samples multiplied by 10000.
+Points are grouped by 1 and colored according to "Sample Collection".
+The size of the points is set to 1, and the shape is set to 15.
+
+	geom_point(aes(x = epiweek2, y = tested * 10000, group = 1, col = "Sample Collection"), stat = "identity", size = 1, shape = 15) +  # Add points for sample collection
+
+This adds a bar plot for the number of samples (n) for each epidemiological week (epiweek2).
+Bars are filled and colored gray.
+
+	geom_bar(aes(x = epiweek2, y = n), stat = "identity", fill = "gray", colour = "gray") +  # Add bar plot for number of cases
+
+This adds points for log genome copies multiplied by 10000.
+Points are grouped and colored by the Country variable.
+The size of the points is set to 2.
+
+	geom_point(aes(x = epiweek2, y = loglevels * 10000, group = Country, col = Country), stat = "identity", size = 2) +  # Add points for log genome copies
+
+This adds lines for log genome copies multiplied by 10000.
+Lines are grouped and colored by the Country variable.
+The size of the lines is set to 1.
+
+	geom_line(aes(x = epiweek2, y = loglevels * 10000, group = Country, col = Country), stat = "identity", size = 1) +  # Add lines for log genome copies
+
+This sets the x-axis breaks to show every 2nd label
+
+	scale_x_discrete(breaks = every_nth(n = 2)) +  # Set x-axis breaks to show every 2nd label
+
+This manually sets the colors for the points and lines.
+"Sample Collection" is colored dark blue.
+"South African SARS-CoV-2 Wastewater Levels" is colored #009ADE (a shade of blue).
+
+	scale_colour_manual(values = c("Sample Collection" = "darkblue", "South African SARS-CoV-2 Wastewater Levels" = "#009ADE")) +  # Set custom colors for the points and lines
+
+	
+This customizes the legend, overriding the aesthetics for shape and line type.
+
+	guides(color = guide_legend(override.aes = list(shape = c(15, 16), linetype = c(0, 1)))) +  # Customize legend
+
+This sets the y-axis to have a secondary axis for log genome copies divided by 10000.
+The secondary axis is labeled "Log Genome Copies/ml (N Gene)".
+The y-axis has 4 breaks, and labels are formatted with comma
+
+	scale_y_continuous(sec.axis = sec_axis(~ . / 10000, name = "Log Genome Copies/ml (N Gene)\n"),  # Create secondary y-axis for log genome copies
+                     breaks = scales::pretty_breaks(n = 4),  # Set breaks for the y-axis
+                     labels = scales::label_comma()) +  # Format y-axis labels with commas
+
+
+This adds labels to the x-axis ("Epidemiological week") and y-axis ("Laboratory confirmed cases").
+
+	labs(x = "\nEpidemiological week", y = "Laboratory confirmed cases\n") +  # Add axis labels
+
+This creates facets for the PCR variable, with levels "qPCR" and "dPCR".
+The x-axis scales are free within each facet, and the spacing is free.
+
+	facet_grid(~factor(PCR, levels = c('qPCR', 'dPCR')), scales = "free_x", space = "free_x") +  # Create facets for PCR method with free scales
+	
+This customizes various theme elements:
+x-axis text is rotated 90 degrees, aligned horizontally at 0, colored black, and sized 12.
+y-axis text is colored black and sized 12.
+The legend is positioned at the bottom, and its title is removed.
+General text is colored black and sized 12.
+x-axis and y-axis lines are colored black and sized 1.
+Facet background is white, and facet text is sized 12
+
+	ggthemes::theme_tufte() +  # Apply Tufte theme
+	theme(
+    	axis.text.x = element_text(angle = 90, hjust = 0, color = "black", size = 12),  # Customize x-axis text
+    	axis.text.y = element_text(color = "black", size = 12),  # Customize y-axis text
+    	legend.position = "bottom",  # Place legend at the bottom
+    	legend.title = element_blank(),  # Remove legend title
+    	text = element_text(color = "black", size = 12),  # Set general text properties
+    	axis.line.x = element_line(color = "black", size = 1),  # Customize x-axis line
+    	axis.line.y = element_line(color = "black", size = 1),  # Customize y-axis line
+    	strip.background = element_rect(fill = "white"),  # Customize facet background
+    	strip.text = element_text(size = 12)  # Customize facet text
+	)
+
+This line displays the ggplot object created.
+
+	rsaplot  # Plot the ggplot object
+
+This closes the PNG device, saving the plot to the file.
+
+	dev.off()  # Close the PNG device
 
 ![Screenshot](img/overall_rsa.png)
 
