@@ -6,7 +6,7 @@ The graphs are produced using R version 4.2.2 or higher and the following packag
 
 These libraries 
 
-  library (ggplot2)
+    library (ggplot2)
   library(ggthemes)
   library(scales)
   library(tidyverse)
