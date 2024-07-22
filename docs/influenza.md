@@ -1,6 +1,4 @@
-#How to analyse influenza A and B from wastewater samples 
-
-The National Institute for Communicable Diseases (NICD) 
+# How to analyse influenza A and B from wastewater samples 
 
 The graphs are produced using R version 4.2.2 or higher and the following packages are required to run the script:
 
@@ -22,9 +20,15 @@ These following libraries are required to run this script:
     library(tidyr)
     library(reshape2)
 
+# Preparing the data 
+
+Wastewater surveillance data is stored on RedCap. Export the data as a csv and set a path to your folders where you have stored the latest wastewater data download. Read in the data using the read.csv() function
+
     setwd("C:/set/path/to/folder")
 
     Influenza <- read.csv("C:/path/to/file/Wastewatergeneral_DATA_LABELS_2024-07-11_0948.csv")
+
+Select the following variables from the wastewater data that you have read into R
 
     Influenza <- Influenza[, c("Site.Province.",  "District.Name",
                            "Site.Name.", "Sample.Collection.Date", "Inf.A.Result", "Inf.B.Result.")]
