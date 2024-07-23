@@ -1,0 +1,750 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../labtat/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.30">
+    
+    
+      
+        <title>Sample Maps - NICD Wastewater Genomics Syndicate</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.3cba04c6.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="light-green" data-md-color-accent="purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#gis-graphs-for-sample-tracking" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="NICD Wastewater Genomics Syndicate" class="md-header__button md-logo" aria-label="NICD Wastewater Genomics Syndicate" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            NICD Wastewater Genomics Syndicate
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Sample Maps
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="light-green" data-md-color-accent="purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6zm0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4zM7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="light-green" data-md-color-accent="lime"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3Z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+    
+  
+  Sample Maps
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../labtat/" class="md-tabs__link">
+        
+  
+    
+  
+  Turnaround Times
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../sequencing/" class="md-tabs__link">
+        
+  
+    
+  
+  Sequencing Analysis
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../quantitative/" class="md-tabs__link">
+        
+  
+    
+  
+  SARS-CoV-2 Quantitative Levels
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../influenza/" class="md-tabs__link">
+        
+  
+    
+  
+  Influenza Analysis
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="NICD Wastewater Genomics Syndicate" class="md-nav__button md-logo" aria-label="NICD Wastewater Genomics Syndicate" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    NICD Wastewater Genomics Syndicate
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Sample Maps
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Sample Maps
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#setting-up" class="md-nav__link">
+    <span class="md-ellipsis">
+      Setting up
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#preparing-our-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      Preparing our data
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#generating-the-maps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Generating the maps
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../labtat/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Turnaround Times
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sequencing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Sequencing Analysis
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../quantitative/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SARS-CoV-2 Quantitative Levels
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../influenza/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Influenza Analysis
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="gis-graphs-for-sample-tracking">GIS graphs for Sample Tracking</h1>
+<p>When wastewater samples are collected, the RedCap Mobile App is used to capture 
+the sample collection forms. These forms contain information about when, where and 
+how a sample was collected.This helps us ensure that samples are collected from 
+the correct sites and assists in sample tracking. </p>
+<p>Since we have the location (longitude and latitute) of the samples being collected, 
+we can plot them on a map using R and Google Maps. Other GIS software, such as ArcGIS, 
+may also be used; however, for this tuturial we will only be using open source software. </p>
+<h2 id="setting-up">Setting up</h2>
+<p>In order to run this script you will need R version 4.2.2 or higher. You will also need to register a Google API
+in order to be able to make use of Google services within R. 
+To register with google you can visit the <a href="https://mapsplatform.google.com/">Google Maps Platform</a></p>
+<p>Once registered, ensure that you enable your API. It is important to note that your API key should be kept private 
+and should not be shared with anyone else. This key will be used to connect with Google Maps using your R script. </p>
+<p>To get started, you will need the following packages to run the script: ggmap, rstudioapi, tidyverse, lubridate and ggrepel. </p>
+<p>If you do not already have these packages installed, you can simply use the install.packages() function.
+You can simply copy and paste the below and click "Run" to install the package: </p>
+<pre><code>install.packages("ggmap")
+</code></pre>
+<p>Multiple packages can also be installed at the same time by creating a list of the packages to be installed using the c() function: </p>
+<pre><code>install.packages(c("ggmap", "rstudioapi", "tidyverse", "lubridate", "ggrepel"))
+</code></pre>
+<p>Once you have installed a package in R, you don't need to install it again when you subsequently use R. 
+However, you do need to tell R which packages you would like to use to run the script. 
+We can do this using the library() function: </p>
+<pre><code>library(ggmap)
+library(rstudioapi)
+library(tidyverse)
+library(lubridate)
+library(ggrepel)
+</code></pre>
+<p>Once we have loaded the libraries we would like to use, we have to connect to Google using our API key. We can do this using: </p>
+<pre><code>register_google(key = 'enter-your-key-here')
+</code></pre>
+<h2 id="preparing-our-data">Preparing our data</h2>
+<p>Now we are ready to work with our data. As previously mentioned, this data is collected using RedCap. In order to obtain this data 
+you will need to export it from RedCap. The data exported is in the form of a .csv file.</p>
+<p>You can download an example dataset to practice with here: <a href="static_files/wastewater_sample_data.csv" download>wastewater_sample_data.csv</a></p>
+<p>We can take that csv file and save it as a dataframe which we will call "map" using the read.csv() function: </p>
+<pre><code>map &lt;- read.csv("Path/to/the/file.csv", check.names = F) #Replace the path with the path to the file on your computer
+</code></pre>
+<p>If you view the "map" dataframe, you will notice that each column name is separated by a fullstop. This is because spaces in 
+column headings were replace with a fullstop when we were reading in the csv file. For example: "Sample Number" 
+becomes "Sample.Number.". To make it a bit easier to work with, we are going to rename the columns we will be working with:</p>
+<pre><code>map$record_id &lt;- map$Sample.Number.
+map$sam_site_id &lt;- map$Sample.Site.Identification.Number.
+map$site_latitude &lt;- map$Site.Location..lat.
+map$site_longitude &lt;- map$Site.Location..long.
+map$sam_col_date &lt;- as.Date(map$Sample.Collection.Date) #the as.Date() function just ensures that the dates are being recognised as dates
+map$sam_col_tim &lt;- map$Sample.Collection.Time.
+</code></pre>
+<p>Since we only want to work with these columns, we're going to filter out all the ones we don't need and select the ones we want to work with.
+This step isn't really that necessary, but helps keeps things tidy and is easier to work with: </p>
+<pre><code>map &lt;- map %&gt;% 
+       select(record_id, sam_site_id, site_latitude, site_longitude, sam_col_date, sam_col_tim)
+</code></pre>
+<p>Since we report our findings using epidemiological weeks, or epiweeks, we want to add another column with the epiweeks. 
+We can use the sample collection date to calculate the epiweek: </p>
+<pre><code>map$epiweek &lt;- lubridate::epiweek(ymd(map$sam_col_date)) #ymd indicates that our dates are saved in the year-month-day format (e.g. 2023-09-15)
+</code></pre>
+<p>We also want to create a column which has both the year and epiweek (e.g. 2023w36). In order to produce this we first 
+have to create a column with the year, another column with the week and then finally concatenate the columns to create the new epiweek2 variable:</p>
+<pre><code>map$year &lt;- strftime(map$sam_col_date, "%Y") #Creating year column  
+map$week &lt;- "w" #creating a week column with "w" representing the weeks. 
+my_cols &lt;- c("year", "week", "epiweek") #creating a new data object which combines the 3 columns in the specified order
+map$epiweek2 &lt;- do.call(paste, c(map[my_cols],sep ="")) #taking that data object and saving it in the newly created epiweek2 column
+</code></pre>
+<p>The "map" dataframe should now look like the example below. </p>
+<p><img alt="Screenshot" src="../img/map_df.png" /> </p>
+<h2 id="generating-the-maps">Generating the maps</h2>
+<p>Now that our data is in the format that we want, we can create maps of where the samples were created.
+The first map will show all points at which samples were collected.</p>
+<p>We first have to specify that we want to save the map as an image as well as the folder we would like the map to be stored</p>
+<pre><code>png("path/to/file/map1.png", 
+    width = 5*900, #specify width dimension
+    height = 5*500, #specify height dimension
+    res = 300, #specifying the resolution of the image
+    pointsize = 8)
+</code></pre>
+<p>Then we generate the site map. Because google map uses the location at the center
+of a map, we must first supply it with the coordinates at the center of our sample collection sites. 
+For our sample collection sites we use the following coordinates as the center of our map. </p>
+<p>City of Ekurhuleni: lon = 28.23570, lat = -25.99873</p>
+<p>City of Johannesburg:lon = lon = 27.91593 , lat = -26.31008</p>
+<p>City of Tshwane:lon = 28.12 , lat = -25.76257</p>
+<p>If you want to generate a map for a different city, you can simple use that city's coordinates as the center of your map.</p>
+<p>To generate a map of all samples collected in the City of Ekurhuleni we first have to tell Google when the center of our map is</p>
+<pre><code>coe_sites &lt;- ggmap(get_googlemap(center = c(lon = 27.91593 , lat = -26.31008),
+                             zoom = 12,
+                             maptype = "hybrid",
+                             color = "color")) +
+</code></pre>
+<p>To add points (red dots) where samples were collected onto the Google Maps, we use the coordinates 
+of each sample collected in the "map" dataframe we created. </p>
+<pre><code>geom_point(data = map, aes(x= site_longitude, y=site_latitude),
+         color = "red", #we specify the colour of our points
+         size= 2) + #we specify the size of our point
+theme(axis.title = element_blank(), #This remove the title from the map
+    axis.text = element_blank(), #This removes coordinates from being displayed along the x- and y-axis
+    axis.ticks = element_blank()) #This removes any axis-ticks
+</code></pre>
+<p>To then generate the maps, we finally run: </p>
+<pre><code>coj_sites
+dev.off()
+</code></pre>
+<p>You should now have a map illustrating all sample collection points in the City of Ekurhuleni.</p>
+<p><img alt="Screenshot" src="../img/Map1.png" /></p>
+<p>In order to generate a map showing samples collected during a specific 
+epiweek, as well as the time in which those samples were collected, we will 
+first create another dataframe called "map2" and filter for a specific epiweek: </p>
+<pre><code>map2 &lt;- map%&gt;% 
+filter(epiweek == 37)
+</code></pre>
+<p>Then we create a map of all the points collected during that epiweek: </p>
+<pre><code>png("path/to/file/map2.png", 
+    width = 5*900,
+    height = 5*500, 
+    res = 300,
+    pointsize = 8)
+
+coe_sites2 &lt;- ggmap(get_googlemap(center = c(lon = 28.23570, lat = -25.99873),
+                             zoom =12,
+                             scale = 2,
+                             maptype = "hybrid",
+                             color = "color")) +
+geom_point(data = map2, aes(x= site_longitude, y=site_latitude), #ensure that you are using the filtered "map2" dataframe
+         color = "red", 
+         size= 2) +
+</code></pre>
+<p>In addition to creating the map we want to add labels showing the sample collection times. Since the sample colletion times are also recorded on 
+the sample collection forms, we can use the geom_label_repel() function to convert those times into sample labels. Here we specify that for each
+sample, the longitude will be use as our x-coordinate, latitute for the y-coordinate and sample collection time as the label</p>
+<pre><code>geom_label_repel(data = map2, 
+               aes(x= site_longitude, y=site_latitude, label = sam_col_tim), 
+               size = 6)+ #specify size of the label
+theme(axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank())
+coe_sites2
+dev.off()
+</code></pre>
+<p>You should now have two maps illustrating the sample collection points. </p>
+<p><img alt="Screenshot" src="../img/Map2.png" /></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright (c) 2024, NICD-Wastewater-Genomics
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "toc.integrate", "navigation.top", "search.suggest", "search.highlight", "content.tabs.link", "content.code.annotation", "content.code.copy"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.fe8b6f2b.min.js"></script>
+      
+    
+  </body>
+</html>
