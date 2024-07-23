@@ -33,6 +33,7 @@ Select the following variables from the wastewater data that you have read into 
     Influenza <- Influenza[, c("Site.Province.",  "District.Name",
                            "Site.Name.", "Sample.Collection.Date", "Inf.A.Result", "Inf.B.Result.")]
 
+Create an EpiWeek variables that uses the samples collection date to determine the epidemiological week
 
     Influenza_2 <- mutate(Influenza, EpiWeek = ISOweek(Sample.Collection.Date))
 
