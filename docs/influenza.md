@@ -36,9 +36,18 @@ Select the following variables from the wastewater data that you have read into 
 
     Influenza_2 <- mutate(Influenza, EpiWeek = ISOweek(Sample.Collection.Date))
 
-###filter out those that have not been tested
+Filter out those that have not been tested
+
     Influenza_3 <- Influenza_2 %>%
-      mutate_all(~ ifelse(. == "", NA, .))
+        mutate_all(~ ifelse(. == "", NA, .))
+
+Filter the data for Influenza A results only 
+    
+    Influenza_4 <- Influenza_3 %>%
+      filter(!is.na(Inf.A.Result))
+
+Filter the data for Influenza B results only 
+        
 
     
 
