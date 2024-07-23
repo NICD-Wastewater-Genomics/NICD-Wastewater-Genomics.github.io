@@ -166,3 +166,4 @@ Set the desired width and height for the PNG
 Save as a PNG
 
     ggsave("InfluenzaB_200717.png", InfluenzaB_plot, width = width, height = height)
+
