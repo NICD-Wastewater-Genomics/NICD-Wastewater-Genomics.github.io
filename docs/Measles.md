@@ -24,8 +24,8 @@ These following libraries are required to run this script
 
 Wastewater surveillance data is stored on RedCap. Export the data as a csv and set a path to your folders where you have stored the latest wastewater data download. Read in the data using the read.csv() function
 
-  setwd("C:/set/path/to/folder")
-  Measles_WW  <- read.csv("C:/path/to/file/Wastewatergeneral_DATA_LABELS_2024-07-11_0948.csv")
+    setwd("C:/set/path/to/folder")
+    Measles_WW  <- read.csv("C:/path/to/file/Wastewatergeneral_DATA_LABELS_2024-07-11_0948.csv")
 
 Clinical laboratory data 
 
